@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LA Car Beats plugin preview</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap">
+<style>
+:root {
+  --bg:#0A0A0A; --bg-alt:#111; --surface:#141414; --surface-2:#1A1A1A;
+  --border:rgba(255,255,255,.10); --text:#F5F5F5; --text-dim:#A3A3A3; --text-faint:#737373;
+  --accent:#C41E3A; --cta-text:#fff; --radius:8px; --radius-sm:4px;
+  --container:1160px; --font-head:Outfit,sans-serif; --font-body:Inter,system-ui,sans-serif;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font-family:var(--font-body); }
+.topbar { background:#0a0a0a; border-bottom:1px solid var(--border); padding:8px 24px; font-size:12px; display:flex; justify-content:space-between; gap:12px; }
+.topbar a { color:var(--accent); text-decoration:none; font-weight:600; }
+.hero { position:relative; min-height:42vh; }
+.hero img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.hero .shade { position:absolute; inset:0; background:linear-gradient(to top,#0A0A0A,transparent 55%); }
+.hero .copy { position:relative; min-height:42vh; display:flex; align-items:flex-end; padding:32px 24px; max-width:1160px; margin:0 auto; }
+.hero h1 { font-family:var(--font-head); font-size:clamp(1.6rem,4vw,2.6rem); margin:0; }
+.note { font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:600; }
+.rest { border-top:1px dashed var(--border); padding:40px 24px 96px; color:var(--text-faint); font-size:14px; max-width:1160px; margin:0 auto; }
+.chat-ghost { position:fixed; right:16px; bottom:16px; z-index:50; width:64px; height:64px; border-radius:50%; background:#1a1a1a; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--text-faint); }
+/* LA Car Beats guinea pig plugin
+   Scoped to .ams-plug / .ams-plug-sticky
+   Uses this site's :root (red --accent #C41E3A). Do not set gold. */
+
+.ams-plug {
+  background: var(--bg, #0a0a0a);
+  color: var(--text, #f5f5f5);
+  font-family: var(--font-body, Inter, system-ui, sans-serif);
+}
+.ams-plug * { box-sizing: border-box; }
+
+.ams-plug-proof {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--border, rgba(255,255,255,.1));
+  border-bottom: 1px solid var(--border, rgba(255,255,255,.1));
+  background: var(--bg-alt, #111);
+}
+.ams-plug-proof div { padding: 16px 18px; }
+.ams-plug-proof span {
+  display: block;
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--accent, #c41e3a);
+}
+.ams-plug-proof strong {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-head, Outfit, sans-serif);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text, #f5f5f5);
+}
+
+.ams-plug-quote {
+  padding: 44px 0 36px;
+  background: var(--surface, #141414);
+}
+.ams-plug .container {
+  max-width: var(--container, 1160px);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.ams-plug .eyebrow {
+  display: inline-block;
+  margin-bottom: 12px;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent, #c41e3a);
+}
+.ams-plug h2 {
+  margin: 0 0 12px;
+  font-family: var(--font-head, Outfit, sans-serif);
+  font-size: clamp(1.8rem, 4.2vw, 2.7rem);
+  font-weight: 600;
+  letter-spacing: -.03em;
+  line-height: 1.1;
+  color: var(--text, #f5f5f5);
+}
+.ams-plug h2 em {
+  font-style: normal;
+  color: var(--accent, #c41e3a);
+}
+.ams-plug .lead {
+  max-width: 34rem;
+  margin: 0 0 26px;
+  color: var(--text-dim, #a3a3a3);
+}
+
+.ams-plug-grid {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.ams-plug-grid input {
+  height: 48px;
+  width: 100%;
+  padding: 0 14px;
+  border: 1px solid var(--border, rgba(255,255,255,.1));
+  border-radius: var(--radius, 8px);
+  background: var(--surface-2, #1a1a1a);
+  color: var(--text, #f5f5f5);
+  font: inherit;
+}
+.ams-plug-grid input:focus {
+  outline: 2px solid var(--accent, #c41e3a);
+  outline-offset: 0;
+}
+
+.ams-plug-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.ams-plug-chips button {
+  border: 1px solid var(--border, rgba(255,255,255,.1));
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-dim, #a3a3a3);
+  font-size: .8rem;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+.ams-plug-chips button.is-on {
+  border-color: var(--accent, #c41e3a);
+  background: var(--accent, #c41e3a);
+  color: var(--cta-text, #fff);
+}
+
+.ams-plug-actions {
+  display: grid;
+  gap: 10px;
+}
+.ams-plug-actions a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  border-radius: var(--radius-sm, 4px);
+  font-family: var(--font-head, Outfit, sans-serif);
+  font-size: .95rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: inherit;
+}
+.ams-plug-actions .is-text {
+  background: var(--accent, #c41e3a);
+  color: var(--cta-text, #fff);
+}
+.ams-plug-actions .is-call {
+  border: 1px solid var(--accent, #c41e3a);
+  color: var(--accent, #c41e3a);
+}
+.ams-plug .fine {
+  margin: 14px 0 0;
+  font-size: .85rem;
+  color: var(--text-faint, #737373);
+}
+.ams-plug .fine a { color: var(--accent, #c41e3a); }
+
+.ams-plug-jobs {
+  padding: 36px 0 56px;
+  background: var(--bg, #0a0a0a);
+}
+.ams-plug-jobs h3 {
+  margin: 0;
+  font-family: var(--font-head, Outfit, sans-serif);
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+.ams-plug-cards {
+  display: grid;
+  gap: 12px;
+  margin-top: 22px;
+}
+.ams-plug-card {
+  overflow: hidden;
+  border: 1px solid var(--border, rgba(255,255,255,.1));
+  border-radius: var(--radius, 8px);
+  background: var(--surface, #141414);
+  color: inherit;
+  text-decoration: none;
+}
+.ams-plug-card img {
+  width: 100%;
+  height: 168px;
+  object-fit: contain;
+  background: #0d0d0d;
+}
+.ams-plug-card .copy { padding: 14px 16px 16px; }
+.ams-plug-card h4 {
+  margin: 0 0 4px;
+  font-family: var(--font-head, Outfit, sans-serif);
+  font-size: 1.05rem;
+}
+.ams-plug-card p {
+  margin: 0;
+  font-size: .85rem;
+  color: var(--text-dim, #a3a3a3);
+}
+.ams-plug-card span {
+  display: inline-block;
+  margin-top: 12px;
+  border: 1px solid var(--accent, #c41e3a);
+  border-radius: var(--radius-sm, 4px);
+  padding: 7px 12px;
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--accent, #c41e3a);
+}
+
+/* Sticky Text | Call. Right spacer keeps the existing #ams-chat launcher clear. */
+.ams-plug-sticky {
+  position: fixed;
+  left: 12px;
+  right: 88px;
+  bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  z-index: 40;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  pointer-events: none;
+}
+.ams-plug-sticky a {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  border-radius: 4px;
+  font-family: var(--font-head, Outfit, sans-serif);
+  font-size: .9rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+}
+.ams-plug-sticky .is-text {
+  background: var(--accent, #c41e3a);
+  color: #fff;
+}
+.ams-plug-sticky .is-call {
+  background: var(--bg, #0a0a0a);
+  border: 1px solid var(--accent, #c41e3a);
+  color: var(--accent, #c41e3a);
+}
+
+/* Hide the old 3-button bar so we do not double-stack. Chat CSS is not touched. */
+body:has(#ams-plug-beats) .mobile-cta-bar { display: none !important; }
+body:has(#ams-plug-beats) { padding-bottom: 72px; }
+
+@media (min-width: 700px) {
+  .ams-plug-proof { grid-template-columns: repeat(5, 1fr); }
+  .ams-plug-grid { grid-template-columns: 1fr 1fr 1fr; }
+  .ams-plug-actions { grid-template-columns: 1fr 1fr; max-width: 36rem; }
+  .ams-plug-cards { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1024px) {
+  .ams-plug-cards { grid-template-columns: repeat(4, 1fr); }
+  .ams-plug-sticky {
+    left: auto;
+    right: auto;
+    bottom: 20px;
+    width: min(420px, calc(100% - 120px));
+    margin-left: 24px;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span class="note">Existing banner · not in the plugin</span>
+  <a href="tel:+13105138800">Call (310) 513-8800</a>
+</div>
+<section class="hero">
+  <img src="https://www.lacarbeats.com/assets/img/hero/beats-hero-desktop.jpg?v=lock20260920c" alt="">
+  <div class="shade"></div>
+  <div class="copy">
+    <div>
+      <p class="note">Existing banner · we do not replace this</p>
+      <h1>Car audio. CarPlay. Speakers. — LA Car Beats</h1>
+    </div>
+  </div>
+</section>
+<!--
+  LA Car Beats quote plugin — guinea pig
+  INSERT after </section> of class="hero-banner"
+  BEFORE <section class="offer-cards" id="offers">
+  Pair with /assets/css/ams-plugin-beats.css
+-->
+<div class="ams-plug" id="ams-plug-beats" data-ams-plugin="beats-v1">
+  <div class="ams-plug-proof">
+    <div><span>Google</span><strong>4.8</strong></div>
+    <div><span>Reviews</span><strong>650+</strong></div>
+    <div><span>Since</span><strong>2003</strong></div>
+    <div><span>Bay</span><strong>Carson</strong></div>
+    <div><span>Walk-in</span><strong>Mon–Sat 9:30–6</strong></div>
+  </div>
+
+  <section class="ams-plug-quote" id="quote">
+    <div class="container">
+      <span class="eyebrow">Stereo desk · same bay</span>
+      <h2>Text the year, make, and model. <em>We quote the job.</em></h2>
+      <p class="lead">CarPlay, Kicker, Kenwood, Pioneer, dash cam. Nick texts back during shop hours. No prices in this block — tickets stay below.</p>
+
+      <div class="ams-plug-grid">
+        <input name="year" inputmode="numeric" autocomplete="off" placeholder="Year" aria-label="Year">
+        <input name="make" autocomplete="off" placeholder="Make" aria-label="Make">
+        <input name="model" autocomplete="off" placeholder="Model" aria-label="Model">
+      </div>
+
+      <div class="ams-plug-chips" data-chips>
+        <button type="button" data-job="CarPlay">CarPlay</button>
+        <button type="button" data-job="Kicker Dual 12">Kicker Dual 12</button>
+        <button type="button" data-job="Dash cam">Dash cam</button>
+        <button type="button" data-job="Stereo">Stereo</button>
+      </div>
+
+      <div class="ams-plug-actions">
+        <a class="is-text" data-sms href="sms:+12134291092?body=Quote%20request%20from%20LA%20Car%20Beats.">Text us a quote</a>
+        <a class="is-call" href="tel:+13105138800">Call (310) 513-8800</a>
+      </div>
+      <p class="fine">
+        Prefer email?
+        <a href="mailto:audiomotorsports@gmail.com?subject=Quote%20request%20%E2%80%94%20LA%20Car%20Beats">audiomotorsports@gmail.com</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="ams-plug-jobs">
+    <div class="container">
+      <span class="eyebrow">On this desk</span>
+      <h3>Four doors. Real plates. On-site pages.</h3>
+      <div class="ams-plug-cards">
+        <a class="ams-plug-card" href="https://www.lacarbeats.com/services/head-units-carplay/">
+          <img src="https://www.lacarbeats.com/assets/offers/cstyle/plates/plate-pioneer-w3000nex.png" width="900" height="700" alt="Pioneer W3000NEX" loading="lazy">
+          <div class="copy">
+            <h4>Pioneer W3000NEX</h4>
+            <p>Wireless CarPlay & Android Auto</p>
+            <span>CarPlay</span>
+          </div>
+        </a>
+        <a class="ams-plug-card" href="https://www.lacarbeats.com/services/bass-amps-subwoofers/">
+          <img src="https://www.lacarbeats.com/assets/offers/cstyle/plates/plate-kicker-dual-cvs.png" width="900" height="700" alt="Kicker Dual 12 CVS" loading="lazy">
+          <div class="copy">
+            <h4>Kicker Dual 12</h4>
+            <p>Loaded CVS box · bass / subs</p>
+            <span>Bass / subs</span>
+          </div>
+        </a>
+        <a class="ams-plug-card" href="https://www.lacarbeats.com/shop/">
+          <img src="https://www.lacarbeats.com/assets/offers/cstyle/plates/plate-thinkware-q200.png" width="900" height="700" alt="Thinkware Q200 dash cam" loading="lazy">
+          <div class="copy">
+            <h4>Thinkware Q200</h4>
+            <p>Dash cam · quote on this desk</p>
+            <span>Dash cams</span>
+          </div>
+        </a>
+        <a class="ams-plug-card" href="https://www.lacarbeats.com/shop/car-stereos/">
+          <img src="https://www.lacarbeats.com/assets/offers/cstyle/plates/plate-kenwood-dmx4710s.png" width="900" height="700" alt="Kenwood DMX4710S" loading="lazy">
+          <div class="copy">
+            <h4>Kenwood DMX4710S</h4>
+            <p>Wired CarPlay · stereos</p>
+            <span>Stereos</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="ams-plug-sticky" aria-label="Text or call">
+  <a class="is-text" data-sms-sticky href="sms:+12134291092?body=Quote%20request%20from%20LA%20Car%20Beats.">Text us</a>
+  <a class="is-call" href="tel:+13105138800">Call</a>
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById("ams-plug-beats");
+  if (!root) return;
+  var job = "";
+  function smsHref(body) {
+    var msg = encodeURIComponent(body);
+    return /iPhone|iPad|iPod/i.test(navigator.userAgent)
+      ? "sms:+12134291092&body=" + msg
+      : "sms:+12134291092?body=" + msg;
+  }
+  function body() {
+    var y = ((root.querySelector("[name=year]") || {}).value || "").trim();
+    var mk = ((root.querySelector("[name=make]") || {}).value || "").trim();
+    var md = ((root.querySelector("[name=model]") || {}).value || "").trim();
+    var car = [y, mk, md].filter(Boolean).join(" ");
+    var parts = ["Quote request"];
+    if (car) parts.push(car);
+    if (job) parts.push(job);
+    parts.push("From LA Car Beats.");
+    return parts.join(" — ");
+  }
+  function bind(el) {
+    if (!el) return;
+    el.addEventListener("click", function () {
+      el.href = smsHref(body());
+    });
+  }
+  root.querySelectorAll("[data-job]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var next = btn.getAttribute("data-job");
+      job = job === next ? "" : next;
+      root.querySelectorAll("[data-job]").forEach(function (b) {
+        b.classList.toggle("is-on", b.getAttribute("data-job") === job);
+      });
+    });
+  });
+  bind(root.querySelector("[data-sms]"));
+  bind(document.querySelector("[data-sms-sticky]"));
+})();
+</script>
+
+<div class="rest">Existing SEO page continues · offer tickets, FAQs, YouTube stay. Not in the plugin.</div>
+<div class="chat-ghost">Chat</div>
+</body>
+</html>
