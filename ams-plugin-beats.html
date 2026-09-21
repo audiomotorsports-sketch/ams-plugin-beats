@@ -1,0 +1,133 @@
+<!--
+  LA Car Beats quote plugin — guinea pig
+  INSERT after </section> of class="hero-banner"
+  BEFORE <section class="offer-cards" id="offers">
+  Pair with /assets/css/ams-plugin-beats.css
+-->
+<div class="ams-plug" id="ams-plug-beats" data-ams-plugin="beats-v1">
+  <div class="ams-plug-proof">
+    <div><span>Google</span><strong>4.8</strong></div>
+    <div><span>Reviews</span><strong>650+</strong></div>
+    <div><span>Since</span><strong>2003</strong></div>
+    <div><span>Bay</span><strong>Carson</strong></div>
+    <div><span>Walk-in</span><strong>Mon–Sat 9:30–6</strong></div>
+  </div>
+
+  <section class="ams-plug-quote" id="quote">
+    <div class="container">
+      <span class="eyebrow">Stereo desk · same bay</span>
+      <h2>Text the year, make, and model. <em>We quote the job.</em></h2>
+      <p class="lead">CarPlay, Kicker, Kenwood, Pioneer, dash cam. Nick texts back during shop hours. No prices in this block — tickets stay below.</p>
+
+      <div class="ams-plug-grid">
+        <input name="year" inputmode="numeric" autocomplete="off" placeholder="Year" aria-label="Year">
+        <input name="make" autocomplete="off" placeholder="Make" aria-label="Make">
+        <input name="model" autocomplete="off" placeholder="Model" aria-label="Model">
+      </div>
+
+      <div class="ams-plug-chips" data-chips>
+        <button type="button" data-job="CarPlay">CarPlay</button>
+        <button type="button" data-job="Kicker Dual 12">Kicker Dual 12</button>
+        <button type="button" data-job="Dash cam">Dash cam</button>
+        <button type="button" data-job="Stereo">Stereo</button>
+      </div>
+
+      <div class="ams-plug-actions">
+        <a class="is-text" data-sms href="sms:+12134291092?body=Quote%20request%20from%20LA%20Car%20Beats.">Text us a quote</a>
+        <a class="is-call" href="tel:+13105138800">Call (310) 513-8800</a>
+      </div>
+      <p class="fine">
+        Prefer email?
+        <a href="mailto:audiomotorsports@gmail.com?subject=Quote%20request%20%E2%80%94%20LA%20Car%20Beats">audiomotorsports@gmail.com</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="ams-plug-jobs">
+    <div class="container">
+      <span class="eyebrow">On this desk</span>
+      <h3>Four doors. Real plates. On-site pages.</h3>
+      <div class="ams-plug-cards">
+        <a class="ams-plug-card" href="/services/head-units-carplay/">
+          <img src="/assets/offers/cstyle/plates/plate-pioneer-w3000nex.png" width="900" height="700" alt="Pioneer W3000NEX" loading="lazy">
+          <div class="copy">
+            <h4>Pioneer W3000NEX</h4>
+            <p>Wireless CarPlay & Android Auto</p>
+            <span>CarPlay</span>
+          </div>
+        </a>
+        <a class="ams-plug-card" href="/services/bass-amps-subwoofers/">
+          <img src="/assets/offers/cstyle/plates/plate-kicker-dual-cvs.png" width="900" height="700" alt="Kicker Dual 12 CVS" loading="lazy">
+          <div class="copy">
+            <h4>Kicker Dual 12</h4>
+            <p>Loaded CVS box · bass / subs</p>
+            <span>Bass / subs</span>
+          </div>
+        </a>
+        <a class="ams-plug-card" href="/shop/">
+          <img src="/assets/offers/cstyle/plates/plate-thinkware-q200.png" width="900" height="700" alt="Thinkware Q200 dash cam" loading="lazy">
+          <div class="copy">
+            <h4>Thinkware Q200</h4>
+            <p>Dash cam · quote on this desk</p>
+            <span>Dash cams</span>
+          </div>
+        </a>
+        <a class="ams-plug-card" href="/shop/car-stereos/">
+          <img src="/assets/offers/cstyle/plates/plate-kenwood-dmx4710s.png" width="900" height="700" alt="Kenwood DMX4710S" loading="lazy">
+          <div class="copy">
+            <h4>Kenwood DMX4710S</h4>
+            <p>Wired CarPlay · stereos</p>
+            <span>Stereos</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="ams-plug-sticky" aria-label="Text or call">
+  <a class="is-text" data-sms-sticky href="sms:+12134291092?body=Quote%20request%20from%20LA%20Car%20Beats.">Text us</a>
+  <a class="is-call" href="tel:+13105138800">Call</a>
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById("ams-plug-beats");
+  if (!root) return;
+  var job = "";
+  function smsHref(body) {
+    var msg = encodeURIComponent(body);
+    return /iPhone|iPad|iPod/i.test(navigator.userAgent)
+      ? "sms:+12134291092&body=" + msg
+      : "sms:+12134291092?body=" + msg;
+  }
+  function body() {
+    var y = ((root.querySelector("[name=year]") || {}).value || "").trim();
+    var mk = ((root.querySelector("[name=make]") || {}).value || "").trim();
+    var md = ((root.querySelector("[name=model]") || {}).value || "").trim();
+    var car = [y, mk, md].filter(Boolean).join(" ");
+    var parts = ["Quote request"];
+    if (car) parts.push(car);
+    if (job) parts.push(job);
+    parts.push("From LA Car Beats.");
+    return parts.join(" — ");
+  }
+  function bind(el) {
+    if (!el) return;
+    el.addEventListener("click", function () {
+      el.href = smsHref(body());
+    });
+  }
+  root.querySelectorAll("[data-job]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var next = btn.getAttribute("data-job");
+      job = job === next ? "" : next;
+      root.querySelectorAll("[data-job]").forEach(function (b) {
+        b.classList.toggle("is-on", b.getAttribute("data-job") === job);
+      });
+    });
+  });
+  bind(root.querySelector("[data-sms]"));
+  bind(document.querySelector("[data-sms-sticky]"));
+})();
+</script>
